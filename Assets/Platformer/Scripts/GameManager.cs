@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using TMPro;
 using System.Collections;
 
@@ -10,7 +11,6 @@ public class GameManager : MonoBehaviour
     private int coinCount;
     private int score;
     public Camera cam;
-    public Transform brickClick;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -37,7 +37,9 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         int timeLeft = 300 - (int)(Time.time);
-        timerText.text = $"Time: {timeLeft}"; 
+        timerText.text = $"Time: {timeLeft}";
+        brickRaycast();
+        qBlockRaycast();
     }
 
     void OnTriggerEnter(Collider other)
@@ -48,19 +50,40 @@ public class GameManager : MonoBehaviour
             SetCoinCount();
         }
     }
-    
-    /*if(Input.GetMouseButtonDown(0))
+
+    void brickRaycast()
     {
-        Vector3 screenPos = Input.mousePosition;
-
-        //create a ray that goes through the screenPosition using a camera
-        Ray cursorRay = cam.ScreenPointToRay(screenPos);
-        bool rayHitSomething = Physics.Raycast(cursorRay, out RaycastHit screenHitInfo);
-
-        if (rayHitSomething && screenHitInfo.transform.gameObject.CompareTag("Brick"))
+        if (Input.GetMouseButtonDown(0))
         {
-            brickClick.position = screenHitInfo.point;
+            Vector3 screenPos = Input.mousePosition;
+
+            //create a ray that goes through the screenPosition using a camera
+            Ray cursorRay = cam.ScreenPointToRay(screenPos);
+            bool rayHitSomething = Physics.Raycast(cursorRay, out RaycastHit screenHitInfo);
+
+            if (rayHitSomething && screenHitInfo.transform.gameObject.CompareTag("Brick"))
+            {
+                Destroy(screenHitInfo.transform.gameObject);
+            }
         }
-    }*/
+    }
     
+    void qBlockRaycast()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Vector3 screenPos = Input.mousePosition;
+
+            //create a ray that goes through the screenPosition using a camera
+            Ray cursorRay = cam.ScreenPointToRay(screenPos);
+            bool rayHitSomething = Physics.Raycast(cursorRay, out RaycastHit screenHitInfo);
+
+            if (rayHitSomething && screenHitInfo.transform.gameObject.CompareTag("QBlock"))
+            {
+                coinCount = coinCount + 1;
+                SetCoinCount();
+            }
+        }
+    }
+
 }
