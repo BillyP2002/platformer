@@ -57,6 +57,7 @@ public class GameManager : MonoBehaviour
         if (timeLeft == 0)
         {
             timeLeft = 0;
+            Destroy(GameObject.FindWithTag("Player"));
             resultText.SetActive(true);
             resultText.GetComponent<TextMeshProUGUI>().text = "Time Up!";
         }
@@ -71,23 +72,6 @@ public class GameManager : MonoBehaviour
             SetCoinCount();
             SetScoreText();
         }
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Obstacle"))
-        {
-            Destroy(gameObject);
-            resultText.gameObject.SetActive(true);
-            resultText.GetComponent<TextMeshProUGUI>().text = "Game Over";
-        }
-        
-        if (collision.gameObject.CompareTag("goal"))
-        {
-            resultText.gameObject.SetActive(true);
-            resultText.GetComponent<TextMeshProUGUI>().text = "Congratulations!";
-        }
-        
     }
 
     void brickRaycast()
