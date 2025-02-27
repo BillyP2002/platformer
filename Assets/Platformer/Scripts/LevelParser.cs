@@ -38,6 +38,8 @@ public class LevelParser : MonoBehaviour
     public GameObject questionBoxPrefab;
     public GameObject stonePrefab;
     public GameObject rockPrefab;
+    public GameObject waterPrefab;
+    public GameObject goalPrefab;
 
     // --------------------------------------------------------------------------
     void Start()
@@ -79,10 +81,7 @@ public class LevelParser : MonoBehaviour
             char[] letters = currentLine.ToCharArray();
             for (int col = 0; col < letters.Length; ++col)
             {
-
-                // Todo - Instantiate a new GameObject that matches the type specified by letter
-                // Todo - Position the new GameObject at the appropriate location by using row and column
-                // Todo - Parent the new GameObject under levelRoot
+                
                 if (letters[col] == 'x')
                 {
                     Vector3 pos = new Vector3(col + 0.5f, row + 0.5f, 0f);
@@ -108,6 +107,20 @@ public class LevelParser : MonoBehaviour
                 {
                     Vector3 pos = new Vector3(col + 0.5f, row + 0.5f, 0f);
                     GameObject newObj = Instantiate(brickPrefab, environmentRoot);
+                    newObj.transform.position = pos;
+                }
+                
+                if (letters[col] == 'w')
+                {
+                    Vector3 pos = new Vector3(col + 0.5f, row + 0.5f, 0f);
+                    GameObject newObj = Instantiate(waterPrefab, environmentRoot);
+                    newObj.transform.position = pos;
+                }
+                
+                if (letters[col] == 'g')
+                {
+                    Vector3 pos = new Vector3(col + 0.5f, row + 0.5f, 0f);
+                    GameObject newObj = Instantiate(goalPrefab, environmentRoot);
                     newObj.transform.position = pos;
                 }
             }

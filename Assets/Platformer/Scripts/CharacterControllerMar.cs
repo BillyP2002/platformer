@@ -1,4 +1,8 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using Unity.VisualScripting;
 
 public class CharacterControllerMar : MonoBehaviour
 {
@@ -7,6 +11,10 @@ public class CharacterControllerMar : MonoBehaviour
     public float jumpImpulse = 8f;
     Rigidbody rb;
     public float jumpBoost = 8f;
+    public GameObject resultText;
+
+    public delegate void blockInteractions(int points, int coins);
+    public static event blockInteractions OnBlockInteractions;
 
     [Header("Debug Stuff")] public bool isGrounded;
     
@@ -77,4 +85,33 @@ public class CharacterControllerMar : MonoBehaviour
            transform.rotation = rotation;
        }
     }
-}
+    
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Obstacle"))
+        {
+            Destroy(gameObject);
+            resultText.gameObject.SetActive(true);
+            resultText.GetComponent<TextMeshProUGUI>().text = "Game Over";
+        }
+        
+        if (collision.gameObject.CompareTag("goal"))
+        {
+            resultText.gameObject.SetActive(true);
+            resultText.GetComponent<TextMeshProUGUI>().text = "Congratulations!";
+        }
+        
+        if (collision.gameObject.CompareTag("Brick"))
+        {
+            Destroy(collision.gameObject);
+            OnBlockInteractions?.Invoke(100, 0);
+        }
+        
+        if (collision.gameObject.CompareTag("QBlock"))
+        {
+            OnBlockInteractions?.Invoke(100, 1);
+        }
+    }
+            
+    }
+

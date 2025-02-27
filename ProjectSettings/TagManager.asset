@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Brick
   - QBlock
+  - Water
+  - goal
+  - Obstacle
   layers:
   - Default
   - TransparentFX

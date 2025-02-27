@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
@@ -8,6 +9,8 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI timerText;
     public TextMeshProUGUI coinText;
     public TextMeshProUGUI scoreText;
+    public GameObject resultText;
+    public GameObject player;
     private int coinCount;
     private int score;
     public Camera cam;
@@ -19,6 +22,16 @@ public class GameManager : MonoBehaviour
         score = 0;
         SetCoinCount();
         SetScoreText();
+        resultText.SetActive(false);
+        CharacterControllerMar.OnBlockInteractions += OnOnBlockInteractions;
+    }
+
+    private void OnOnBlockInteractions(int points, int coins)
+    {
+        score = score + points;
+        coinCount = coinCount + coins;
+        SetScoreText();
+        SetCoinCount();
     }
     
     //Update coin count
@@ -36,10 +49,17 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        int timeLeft = 300 - (int)(Time.time);
+        int timeLeft = 100 - (int)(Time.time);
         timerText.text = $"Time: {timeLeft}";
         brickRaycast();
         qBlockRaycast();
+
+        if (timeLeft == 0)
+        {
+            timeLeft = 0;
+            resultText.SetActive(true);
+            resultText.GetComponent<TextMeshProUGUI>().text = "Time Up!";
+        }
     }
 
     void OnTriggerEnter(Collider other)
@@ -47,8 +67,27 @@ public class GameManager : MonoBehaviour
         if (other.gameObject.CompareTag("Coin"))
         {
             coinCount = coinCount + 1;
+            score = score + 100;
             SetCoinCount();
+            SetScoreText();
         }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Obstacle"))
+        {
+            Destroy(gameObject);
+            resultText.gameObject.SetActive(true);
+            resultText.GetComponent<TextMeshProUGUI>().text = "Game Over";
+        }
+        
+        if (collision.gameObject.CompareTag("goal"))
+        {
+            resultText.gameObject.SetActive(true);
+            resultText.GetComponent<TextMeshProUGUI>().text = "Congratulations!";
+        }
+        
     }
 
     void brickRaycast()
@@ -81,6 +120,7 @@ public class GameManager : MonoBehaviour
             if (rayHitSomething && screenHitInfo.transform.gameObject.CompareTag("QBlock"))
             {
                 coinCount = coinCount + 1;
+                
                 SetCoinCount();
             }
         }
